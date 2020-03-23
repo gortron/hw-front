@@ -29,10 +29,13 @@ const StudentProfile = ({ student, handleTagInput }) => {
         })}
         %
       </p>
+      <p>Tags: {tags}</p>
       <input
         type="text"
         className="add-tag-input"
-        onSubmit={(e, student) => handleTagInput(e, student)}
+        onKeyPress={(e, student) => {
+          if (e.key === "Enter") handleTagInput(e, id);
+        }}
       />
     </div>
   );

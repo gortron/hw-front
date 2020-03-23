@@ -19,23 +19,47 @@ const StudentsContainer = () => {
     getStudents();
   }, []);
 
-  const handleSearch = e => {
+  useEffect(() => {
+    const handleSearch = () => {
+      const searchResult = students.filter(student => {
+        const fullName = (
+          student.firstName +
+          " " +
+          student.lastName
+        ).toLowerCase();
+
+        let tagString = "";
+        if (student.tags) {
+          student.tags.forEach(tag => (tagString += " " + tag.toLowerCase()));
+        }
+
+        return fullName.includes(searchName) && tagString.includes(searchTag);
+      });
+      setFilderedStudents(searchResult);
+    };
+    handleSearch();
+  }, [searchName, searchTag, students]);
+
+  const updateSearchName = e => {
     const searchTerm = e.target.value.toLowerCase();
     setSearchName(searchTerm);
-    const searchResult = students.filter(student => {
-      const fullName = (
-        student.firstName +
-        " " +
-        student.lastName
-      ).toLowerCase();
-      return fullName.includes(searchTerm);
-    });
-    setFilderedStudents(searchResult);
   };
 
-  const handleTagSearch = e => {};
-  const handleTagInput = e => {
-    // spread students, only update the one student with the tag, then setStudents to the updated list
+  const updateSearchTag = e => {
+    const searchTerm = e.target.value.toLowerCase();
+    setSearchTag(searchTerm);
+  };
+
+  const handleTagInput = (e, studentId) => {
+    const studentsCopy = [...students];
+    let studentCopy = studentsCopy.find(copy => copy.id === studentId);
+    if (!studentCopy["tags"]) {
+      studentCopy["tags"] = [e.target.value];
+    } else {
+      studentCopy["tags"] = [...studentCopy["tags"], e.target.value];
+    }
+    e.target.value = "";
+    setStudents(studentsCopy);
   };
 
   const renderSearchFields = () => {
@@ -44,21 +68,23 @@ const StudentsContainer = () => {
         <input
           type="text"
           placeholder="Search by name"
-          onChange={e => handleSearch(e)}
+          onChange={e => updateSearchName(e)}
         />
         <input
           id="tag-input"
           type="text"
           placeholder="Search by tag"
-          onChange={e => handleSearch(e)}
+          onChange={e => updateSearchTag(e)}
         />
       </Fragment>
     );
   };
 
   const renderStudentProfiles = () => {
-    if (filteredStudents.length === 0) {
+    if (filteredStudents.length === 0 && !searchName && !searchTag) {
       return <p>Loading...</p>;
+    } else if (filteredStudents.length === 0) {
+      return <p>No results found for those terms.</p>;
     } else {
       return filteredStudents.map(student => {
         return (
