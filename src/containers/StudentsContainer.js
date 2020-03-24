@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import StudentProfile from "../components/StudentProfile";
+import { CardGroup, Container, Input, Divider } from "semantic-ui-react";
 
 const StudentsContainer = () => {
   const [students, setStudents] = useState([]);
@@ -64,19 +65,21 @@ const StudentsContainer = () => {
 
   const renderSearchFields = () => {
     return (
-      <Fragment>
-        <input
+      <CardGroup>
+        <Input
+          className="search-field"
           type="text"
           placeholder="Search by name"
           onChange={e => updateSearchName(e)}
         />
-        <input
+        <Input
+          className="search-field"
           id="tag-input"
           type="text"
           placeholder="Search by tag"
           onChange={e => updateSearchTag(e)}
         />
-      </Fragment>
+      </CardGroup>
     );
   };
 
@@ -86,19 +89,28 @@ const StudentsContainer = () => {
     } else if (filteredStudents.length === 0) {
       return <p>No results found for those terms.</p>;
     } else {
-      return filteredStudents.map(student => {
-        return (
-          <StudentProfile student={student} handleTagInput={handleTagInput} />
-        );
-      });
+      return (
+        <CardGroup>
+          {filteredStudents.map(student => {
+            return (
+              <Fragment>
+                <StudentProfile
+                  student={student}
+                  handleTagInput={handleTagInput}
+                />
+              </Fragment>
+            );
+          })}
+        </CardGroup>
+      );
     }
   };
 
   return (
-    <div>
+    <Container className="students-container">
       {renderSearchFields()}
       {renderStudentProfiles()}
-    </div>
+    </Container>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import StudentsContainer from "./containers/StudentsContainer";
 
 import "./App.css";

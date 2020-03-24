@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, Fragment } from "react";
 import { meanBy } from "lodash";
+import { Card, Image, Button, Icon, Input, Container } from "semantic-ui-react";
 
 const StudentProfile = ({ student, handleTagInput }) => {
   const {
@@ -15,29 +16,88 @@ const StudentProfile = ({ student, handleTagInput }) => {
     tags
   } = student;
 
-  return (
-    <div key={id}>
-      <img src={pic} alt="student pic" />
-      <h3>{firstName + " " + lastName}</h3>
-      <p>Email: {email}</p>
-      <p>Company: {company}</p>
-      <p>Skill: {skill}</p>
-      <p>
-        Grades:
-        {meanBy(student.grades, function(g) {
-          return parseInt(g);
-        })}
-        %
-      </p>
-      <p>Tags: {tags}</p>
-      <input
+  const [expanded, setExpanded] = useState(false);
+
+  const handleExpand = () => {
+    setExpanded(!expanded);
+  };
+
+  const renderGradesAndTags = () => {
+    const renderedGrades = grades.map((grade, idx) => {
+      return (
+        <Card.Meta>
+          Test {idx}:{grade}%
+        </Card.Meta>
+      );
+    });
+    const renderedTags = !tags
+      ? null
+      : tags.map(tag => {
+          return (
+            <Button className="tag-button" disabled>
+              {tag}
+            </Button>
+          );
+        });
+    const tagField = (
+      <Input
         type="text"
         className="add-tag-input"
+        placeholder="Add a tag"
+        transparent
         onKeyPress={(e, student) => {
           if (e.key === "Enter") handleTagInput(e, id);
         }}
       />
-    </div>
+    );
+    return (
+      <Fragment>
+        <br />
+        {renderedGrades}
+        <br />
+        <Container className="student-tags">{renderedTags}</Container>
+        <br />
+        {tagField}
+      </Fragment>
+    );
+  };
+
+  return (
+    <Card key={id} className="student-profile">
+      <Card.Content>
+        <Button
+          className="expand-button"
+          floated="right"
+          icon
+          onClick={() => handleExpand()}
+        >
+          <Icon size="big" name="plus" />
+        </Button>
+        <Image
+          src={pic}
+          alt="student pic"
+          floated="left"
+          size="tiny"
+          circular
+          bordered
+        />
+
+        <Card.Header>
+          {firstName.toUpperCase() + " " + lastName.toUpperCase()}
+        </Card.Header>
+        <Card.Meta>Email: {email}</Card.Meta>
+        <Card.Meta>Company: {company}</Card.Meta>
+        <Card.Meta>Skill: {skill}</Card.Meta>
+        <Card.Meta>
+          Average:{" "}
+          {meanBy(student.grades, function(g) {
+            return parseInt(g);
+          })}
+          %
+        </Card.Meta>
+        {expanded ? renderGradesAndTags() : null}
+      </Card.Content>
+    </Card>
   );
 };
 
