@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import StudentProfile from "../components/StudentProfile";
-import { CardGroup, Container, Input, Divider } from "semantic-ui-react";
+import { CardGroup, Container, Input } from "semantic-ui-react";
 
 const StudentsContainer = () => {
   const [students, setStudents] = useState([]);
@@ -67,12 +67,14 @@ const StudentsContainer = () => {
     return (
       <CardGroup>
         <Input
+          key="name-search"
           className="search-field"
           type="text"
           placeholder="Search by name"
           onChange={e => updateSearchName(e)}
         />
         <Input
+          key="tag-search"
           className="search-field"
           id="tag-input"
           type="text"

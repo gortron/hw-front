@@ -3,6 +3,8 @@ import { meanBy } from "lodash";
 import { Card, Image, Button, Icon, Input, Container } from "semantic-ui-react";
 
 const StudentProfile = ({ student, handleTagInput }) => {
+  const [expanded, setExpanded] = useState(false);
+
   const {
     id,
     firstName,
@@ -15,8 +17,6 @@ const StudentProfile = ({ student, handleTagInput }) => {
     skill,
     tags
   } = student;
-
-  const [expanded, setExpanded] = useState(false);
 
   const handleExpand = () => {
     setExpanded(!expanded);
